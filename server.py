@@ -4,7 +4,7 @@ from functools import partial
 from aiohttp import web
 import aiofiles
 
-from utils import archivate
+from handler import archivate
 
 
 async def handle_index_page(request):
