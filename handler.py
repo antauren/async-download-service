@@ -6,8 +6,10 @@ from aiohttp.web import HTTPNotFound
 
 import logging
 
+logger = logging.getLogger(__file__)
 
-async def archivate(request, dir_path, delay=0, log=False):
+
+async def archivate(request, dir_path, delay=0):
     if os.path.samefile(dir_path, '.') or os.path.samefile(dir_path, '..'):
         raise HTTPNotFound(reason='путь не должен вести на ".." или "."')
 
@@ -31,8 +33,7 @@ async def archivate(request, dir_path, delay=0, log=False):
         while True:
             archive_chunk = await proc.stdout.readline()
 
-            if log:
-                logging.debug('Sending archive chunk ...')
+            logger.debug('Sending archive chunk ...')
 
             if not archive_chunk:
                 break
@@ -43,8 +44,7 @@ async def archivate(request, dir_path, delay=0, log=False):
                 await asyncio.sleep(delay)
 
     except (asyncio.CancelledError, ConnectionResetError, BrokenPipeError, RuntimeError):
-        if log:
-            logging.warning('Download was interrupted.')
+        logger.warning('Download was interrupted.')
 
         raise KeyboardInterrupt
 

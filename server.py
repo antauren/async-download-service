@@ -6,6 +6,8 @@ import aiofiles
 
 from handler import archivate
 
+import logging
+
 
 async def handle_index_page(request):
     async with aiofiles.open('index.html', mode='r') as index_file:
@@ -23,7 +25,8 @@ def parse_args():
     )
 
     parser.add_argument('-p', '--path_to_dirs', default='test_photos', help='путь к каталогам с файлами', type=str)
-    parser.add_argument('-l', '--logging', default=False, type=bool, help='включить логирование', choices=[True, False])
+    parser.add_argument('-l', '--logging', default='ERROR', type=str, help='уровень логирования',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
     parser.add_argument('-d', '--delay', default=0, type=int, help='включить задержку ответа')
 
     return parser.parse_args()
@@ -32,7 +35,9 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    p_archivate = partial(archivate, dir_path=args.path_to_dirs, delay=args.delay, log=args.logging)
+    logging.basicConfig(level=logging.__dict__[args.logging])
+
+    p_archivate = partial(archivate, dir_path=args.path_to_dirs, delay=args.delay)
 
     app = web.Application()
     app.add_routes([
