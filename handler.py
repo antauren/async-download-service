@@ -42,7 +42,12 @@ async def archivate(request, dir_path, delay=0):
 
             await asyncio.sleep(delay)
 
-    except (asyncio.CancelledError, ConnectionResetError, BrokenPipeError, RuntimeError):
+    except asyncio.CancelledError:
+        logger.warning('Download was interrupted.')
+
+        raise
+
+    except (ConnectionResetError, BrokenPipeError, RuntimeError):
         logger.warning('Download was interrupted.')
 
         raise KeyboardInterrupt
