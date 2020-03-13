@@ -40,8 +40,7 @@ async def archivate(request, dir_path, delay=0):
 
             await response.write(archive_chunk)
 
-            if delay > 0:
-                await asyncio.sleep(delay)
+            await asyncio.sleep(delay)
 
     except (asyncio.CancelledError, ConnectionResetError, BrokenPipeError, RuntimeError):
         logger.warning('Download was interrupted.')
