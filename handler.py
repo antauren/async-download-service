@@ -25,6 +25,8 @@ async def archivate(request, dir_path, delay=0):
 
     response.headers['Content-Disposition'] = 'attachment; filename="archive.zip"'
 
+    response.enable_chunked_encoding()
+
     await response.prepare(request)
 
     proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
